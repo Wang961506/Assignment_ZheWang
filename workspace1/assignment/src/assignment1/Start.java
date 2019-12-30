@@ -93,6 +93,7 @@ class process{
 	player player1=new player("1","X");
 	player player2=new player("2","O");
 	player turn=null;
+	boolean gameover=false;
 	int[] count={1,1,1,1,1,1,1,1,1};
 	boardDisplay boarddisplay=new boardDisplay();
 	public void whobegin()
@@ -115,7 +116,7 @@ class process{
 	}
 	
     public void putchesspieces(player players,boardDisplay boarddisplay){
-    	players.getLocation();//得到要下子的列数
+    	players.getLocation();//得到需要下的子的列数
     	if(count[players.column-1]>9){
     		System.out.println("the column is full,please retype it");
     	}
@@ -131,17 +132,55 @@ class process{
     
     public void startGame(){
     	System.out.println("Begin The Game");
-    	boarddisplay.printchessboard();
-    	whobegin();
+    	boarddisplay.printchessboard();//打印棋盘
+    	whobegin();//选择谁先开始
     	while(true)
     	{
-    		putchesspieces(turn,boarddisplay);
+    		putchesspieces(turn,boarddisplay);//下子
     		boarddisplay.printchessboard();
+    		judge(boarddisplay);
+    		if(gameover)
+    		{
+    			System.out.print("Game Over！Player "+turn.name+" win");
+    			break;
+    		}
     	}
     }
     
-    public void judge(){
-    	
+    public void judge(boardDisplay boarddisplay){
+    	for(int i=1;i<10;i++)
+    	{
+    		for(int j=0;j<6;j++)	
+    		{
+    			if((boarddisplay.board[i][j]==turn.shape && boarddisplay.board[i][j+1]==turn.shape && boarddisplay.board[i][j+2]==turn.shape && boarddisplay.board[i][j+3]==turn.shape))
+    			{
+    				gameover=true;
+    				return;
+    			}
+    		}
+    	}
+    	for(int i=4;i<10;i++)
+    	{
+    		for(int j=0;j<9;j++)
+    		{
+    			if((boarddisplay.board[i][j]==turn.shape && boarddisplay.board[i-1][j]==turn.shape && boarddisplay.board[i-2][j]==turn.shape && boarddisplay.board[i-3][j]==turn.shape))
+    			{
+    				gameover=true;
+    				return;
+    			}
+    		}
+    	}
+    	for(int i=4;i<10;i++)
+    	{
+    		for(int j=0;j<6;j++)
+    		{
+    			if((boarddisplay.board[i][j]==turn.shape && boarddisplay.board[i-1][j+1]==turn.shape && boarddisplay.board[i-2][j+2]==turn.shape && boarddisplay.board[i-3][j+3]==turn.shape))
+    			{
+    				gameover=true;
+    				return;
+    			}
+    		}
+    	}
     }
 }
 
