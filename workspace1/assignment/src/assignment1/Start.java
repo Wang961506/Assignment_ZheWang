@@ -27,10 +27,12 @@ public static boolean flag1=true;
 public static void main(String[] args){
 	Start start=new Start();
 	boardDisplay boarddisplay=new boardDisplay();
+	process process1=new process();
 //	while(flag1)
 //	{
+
 		start.display();
-		boarddisplay.printchessboard();
+		process1.startGame();
 //	}
 }
 }
@@ -39,7 +41,7 @@ class player{
 	String name;
     String shape;
     int column;
-    public void playerInf(String name,String shape){
+    public player(String name,String shape){
     	this.name=name;
     	this.shape=shape;
     }
@@ -48,7 +50,7 @@ public void  getLocation(){    //落子
 	boolean flag2=true;
 	while(flag2)
 	{
-	System.out.print("please "+name+" enter the column coordinates:");
+	System.out.print("please player "+name+" enter the column coordinates:");
 	column=stdin.nextInt();
 	if(column<0 || column >9){
 		System.out.println("the column is invalid, Please enter the column again");
@@ -82,10 +84,66 @@ public void printchessboard(){
 
 	}
 	System.out.print("   Player 1 X");
-	System.out.print("       Player 2 O");
+	System.out.println("       Player 2 O");
 	}
 }
 
+
+class process{
+	player player1=new player("1","X");
+	player player2=new player("2","O");
+	player turn=null;
+	int[] count={1,1,1,1,1,1,1,1,1};
+	boardDisplay boarddisplay=new boardDisplay();
+	public void whobegin()
+	{
+		int name;
+		Scanner stdin=new Scanner(System.in);
+		boolean Isselect=true;
+		while(Isselect){
+		System.out.println("please choose the number of player who starts playing first:1.player1 OR 2.player2");
+		System.out.print("enter the number:");
+		name=stdin.nextInt();
+		switch(name){
+		case 1:turn=player1;
+		       return;
+		case 2:turn=player2;
+			   return;
+	    default:System.out.print("the player is not exits! please select again");
+		}
+		}
+	}
+	
+    public void putchesspieces(player players,boardDisplay boarddisplay){
+    	players.getLocation();//得到要下子的列数
+    	if(count[players.column-1]>9){
+    		System.out.println("the column is full,please retype it");
+    	}
+    	else if(boarddisplay.board[9-count[(players.column-1)]+1][players.column-1]=="_"){
+    			boarddisplay.board[9-count[(players.column-1)]+1][players.column-1]=players.shape;
+    			count[players.column-1]++;
+    			if(turn==player1)
+    				turn=player2;
+    			else
+    				turn=player1;
+    	}
+    }
+    
+    public void startGame(){
+    	System.out.println("Begin The Game");
+    	boarddisplay.printchessboard();
+    	whobegin();
+    	while(true)
+    	{
+    		putchesspieces(turn,boarddisplay);
+    		boarddisplay.printchessboard();
+    	}
+    }
+    
+    public void judge(){
+    	
+    }
+}
 
 
 
