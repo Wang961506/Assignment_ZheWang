@@ -28,12 +28,12 @@ public static void main(String[] args){
 	Start start=new Start();
 	boardDisplay boarddisplay=new boardDisplay();
 	process process1=new process();
-//	while(flag1)
-//	{
+    while(true)
+	{
 
 		start.display();
 		process1.startGame();
-//	}
+	}
 }
 }
 
@@ -41,6 +41,7 @@ class player{
 	String name;
     String shape;
     int column;
+    char blitz;
     public player(String name,String shape){
     	this.name=name;
     	this.shape=shape;
@@ -50,16 +51,40 @@ public void  getLocation(){    //落子
 	boolean flag2=true;
 	while(flag2)
 	{
-	System.out.print("please player "+name+" enter the column coordinates:");
-	column=stdin.nextInt();
-	if(column<0 || column >9){
+		if(blitz=='B')
+			System.out.print("Blitz please select column >");
+		else
+        System.out.print("please player "+name+" enter the column coordinates:");
+    //please player "+name+" enter the column coordinates:
+//	column=stdin.nextInt();
+	String inputString=stdin.nextLine();
+	if(inputString.length()>1)
+	{
+		System.out.println("the column is invalid, Please enter the column again");
+		continue;
+	}
+	char inputchar=inputString.charAt(0);
+	if((inputchar<48 || inputchar >57) && inputchar !='B' && inputchar !='T' ){
 		System.out.println("the column is invalid, Please enter the column again");
 	}else
-		flag2=false;
+	{
+		if(inputchar>=48 && inputchar <=57)
+		{
+			column=inputchar-'0';
+			flag2=false;
+		}
+		else
+		{
+		   blitz=inputchar;
+		   flag2=false;
+		}
+	}
 }
 }
 }
 
+    
+    
 class boardDisplay{
 public String[][] board=new String[10][9];
 public void printchessboard(){
@@ -110,23 +135,36 @@ class process{
 		       return;
 		case 2:turn=player2;
 			   return;
-	    default:System.out.print("the player is not exits! please select again");
+	    default:System.out.println("the player is not exits! please select again");
 		}
 		}
 	}
 	
     public void putchesspieces(player players,boardDisplay boarddisplay){
     	players.getLocation();//得到需要下的子的列数
+    	if(players.column!=0)
+    	{
     	if(count[players.column-1]>9){
     		System.out.println("the column is full,please retype it");
     	}
     	else if(boarddisplay.board[9-count[(players.column-1)]+1][players.column-1]=="_"){
     			boarddisplay.board[9-count[(players.column-1)]+1][players.column-1]=players.shape;
     			count[players.column-1]++;
+    			players.column=0;
     			if(turn==player1)
     				turn=player2;
     			else
     				turn=player1;
+    	}	
+    	}
+    	if(players.blitz=='B')
+    	{
+    		
+    		players.getLocation();
+    		for(int i=1;i<10;i++)
+    		 boarddisplay.board[i][players.column-1]="_";
+    		 count[players.column-1]=1;
+    		players.blitz=0;
     	}
     }
     
@@ -135,13 +173,14 @@ class process{
     	boarddisplay.printchessboard();//打印棋盘
     	whobegin();//选择谁先开始
     	while(true)
-    	{
+    	{ 
+    		
     		putchesspieces(turn,boarddisplay);//下子
     		boarddisplay.printchessboard();
     		judge(boarddisplay);
     		if(gameover)
     		{
-    			System.out.print("Game Over！Player "+turn.name+" win");
+    			System.out.println("Game Over！Player "+turn.name+" win");
     			break;
     		}
     	}
@@ -184,6 +223,10 @@ class process{
     }
 }
 
+
+class BlitzandBomb{
+	
+}
 
 
 
