@@ -1,0 +1,17 @@
+package assignment1;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+public class JUnitTest {
+
+	@Test
+	public void testGetlocation(){
+		process pro1=new process();
+		boardDisplay board=new boardDisplay();
+		board.printchessboard();
+		boolean expected=true;
+		pro1.judge(board);
+		assertEquals(expected,process.gameover);
+	}
+
+}
