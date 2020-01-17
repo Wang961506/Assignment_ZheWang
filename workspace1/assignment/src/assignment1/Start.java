@@ -53,29 +53,11 @@ class player {
 	int column;
 	char blitz;
 	char timeBomb;
-	
+	boolean flag2 = true;
 
 	public player() {
 		super();
 	}
-
-	
-	@Override
-	public boolean equals(Object obj) {
-	   if(this == obj)
-		   return true;
-	   if(obj instanceof player)
-	   {
-		   player play=(player)obj;
-		   if(this.name.equals(play.name) && this.shape.equals(play.shape))
-		   return true;
-		   else
-			   return false;
-	   }
-	   else 
-		   return false;
-	}
-
 
 	public player(String name, String shape) {
 		this.name = name;
@@ -83,40 +65,44 @@ class player {
 	}
 
 	public void getLocation() { // 落子
-		Scanner stdin = new Scanner(System.in);
-		boolean flag2 = true;
 		while (flag2) {
-			if (blitz == 'B')
+			System.out.print("Player " + name + " Select Column>");
+			keyinputcheck();
+			if (blitz == 'B') {
 				System.out.print("Blitz Please Select Column >");
-			else if (timeBomb == 'T')
+				keyinputcheck();
+				flag2 = false;
+
+			} else if (timeBomb == 'T') {
 				System.out.print("Time Bomb Please Select Column >");
-			else
-				System.out.print("Player " + name + " Select Column>");
-			// please player "+name+" enter the column coordinates:
-			// column=stdin.nextInt();
-			String inputString = stdin.nextLine();
-			if (inputString.length() > 1) {
-				System.out.println("the column is invalid, Please enter the column again");
-				continue;
-			}
-			char inputchar = inputString.charAt(0);
-			if ((inputchar < 48 || inputchar > 57) && inputchar != 'B' && inputchar != 'T') {
-				System.out.println("the column is invalid, Please enter the column again");
-			} else {
-				if (inputchar >= 48 && inputchar <= 57) {
-					column = inputchar - '0';
-					flag2 = false;
-				} else {
-					if (inputchar == 'B') {
-						blitz = inputchar;
-						flag2 = false;
-					} else {
-						timeBomb = inputchar;
-						flag2 = false;
-					}
-				}
+				keyinputcheck();
+				flag2 = false;
 
 			}
+
+		}
+	}
+
+	public void keyinputcheck() {
+		Scanner stdin = new Scanner(System.in);
+		String inputString = stdin.nextLine();
+		if (inputString.length() > 1) {
+			System.out.println("the column is invalid, Please enter the column again");
+			return;
+		}
+		char inputchar = inputString.charAt(0);
+		if ((inputchar < 48 || inputchar > 57) && inputchar != 'B' && inputchar != 'T') {
+			System.out.println("the column is invalid, Please enter the column again");
+			return;
+		} else if (inputchar >= 48 && inputchar <= 57) {
+			column = inputchar - '0';
+			flag2 = false;
+		} else if (inputchar == 'B') {
+			blitz = inputchar;
+
+		} else {
+			timeBomb = inputchar;
+
 		}
 	}
 }
@@ -158,6 +144,15 @@ class process {
 	boardDisplay boarddisplay = new boardDisplay();
 	Start start1 = new Start();
 
+	public void changePlayer() {
+		if (turn == player1)
+			turn = player2;
+		else if (turn == player2)
+			turn = player1;
+		else
+			turn = null;
+	}
+
 	public void whobegin() {
 		int name;
 		Scanner stdin = new Scanner(System.in);
@@ -184,61 +179,53 @@ class process {
 
 	public void putchesspieces(player players, boardDisplay boarddisplay) {
 		players.getLocation();// 得到需要下的子的列数,或者炸弹和消列的命令
+
 		if (players.timeBomb == 'T') {
-			if (players.column != 0) {
-				if (count[players.column - 1] > 9) {
-					System.out.println("the column is full,please retype it");
-				} else if (boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] == "_") {
-					boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] = "*";
-					boarddisplay.columnofbomb = players.column - 1;// 列
-					boarddisplay.rowofbomb = 9 - count[(players.column - 1)] + 1;// 行
-					count[players.column - 1]++;
-					time1 = time;
+			// if(players.column!=0)
+			// {
+			if (count[players.column - 1] > 9) {
+				System.out.println("the column is full,please retype it");
+			} else if (boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] == "_") {
+				boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] = "*";
+				boarddisplay.columnofbomb = players.column - 1;// 列
+				boarddisplay.rowofbomb = 9 - count[(players.column - 1)] + 1;// 行
+				count[players.column - 1]++;
+				time1 = time;
+				time++;
+				// players.column=0;
+				players.timeBomb = 0;
+				// if(turn==player1)
+				// turn=player2;
+				// else
+				// turn=player1;
+			}
+			// }
+		} else if (players.blitz == 'B') {
+			if (count[players.column - 1] > 9) {
+				System.out.println("the column is full,please retype it");
+			} else {
+				for (int i = 1; i < 10; i++) {
+					boarddisplay.board[i][players.column - 1] = "_";
+					count[players.column - 1] = 1;
 					time++;
-					players.column = 0;
-					players.timeBomb = 0;
-					// if (turn == player1)
-					// turn = player2;
-					// else
-					// turn = player1;
+					players.blitz = 0;
 				}
 			}
 		} else {
-			if (players.column != 0) {
-				if (count[players.column - 1] > 9) {
-					System.out.println("the column is full,please retype it");
-				} else if (boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] == "_") {
-					boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] = players.shape;
-					count[players.column - 1]++;
-					time++;
-					players.column = 0;
-					// if (turn == player1)
-					// turn = player2;
-					// else
-					// turn = player1;
-				}
+			if (count[players.column - 1] > 9) {
+				System.out.println("the column is full,please retype it");
+			} else if (boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] == "_") {// 打印形状
+				boarddisplay.board[9 - count[(players.column - 1)] + 1][players.column - 1] = players.shape;
+				count[players.column - 1]++;
+				time++;
+				players.column = 0;
+				// if(turn==player1)
+				// turn=player2;
+				// else
+				// turn=player1;
 			}
 		}
-		if (players.blitz == 'B') {
 
-			players.getLocation();
-			for (int i = 1; i < 10; i++)
-				boarddisplay.board[i][players.column - 1] = "_";
-			count[players.column - 1] = 1;
-			time++;
-			players.blitz = 0;
-			// if (turn == player1)
-			// turn = player2;
-			// else
-			// turn = player1;
-		}
-	}
-
-	public void changePlayer() {
-		if (turn == player1)
-			turn = player2;
-		else
-			turn = player1;
 	}
 
 	public void startGame() {
@@ -247,14 +234,12 @@ class process {
 		whobegin();// 选择谁先开始
 		while (start1.flag1) {
 
-			putchesspieces(turn, boarddisplay);// 下棋子
+			putchesspieces(turn, boarddisplay);
 			TimeBomb(boarddisplay);
 			if (turn.timeBomb != 'T')
 				boarddisplay.printchessboard();
 			judge(boarddisplay);
-			// if (turn.timeBomb != 'T')
-			// boarddisplay.printchessboard();
-			// judge(boarddisplay);
+			turn.flag2 = true;
 			if (gameover) {
 				for (int i = 0; i < boarddisplay.board.length; i++)
 					for (int j = 0; j < boarddisplay.board[i].length; j++) {
@@ -268,11 +253,11 @@ class process {
 				break;
 			}
 			changePlayer();
+
 		}
 	}
 
 	public void judge(boardDisplay boarddisplay) {
-
 		for (int i = 1; i < 10; i++) {
 			for (int j = 0; j < 6; j++) {
 				if ((boarddisplay.board[i][j] == turn.shape && boarddisplay.board[i][j + 1] == turn.shape
@@ -301,7 +286,6 @@ class process {
 				}
 			}
 		}
-		
 	}
 
 	public void TimeBomb(boardDisplay boarddisplay) {// rowofbomb=players.column-1,columnofbomb=9-count[(players.column-1)]+1;
@@ -319,19 +303,44 @@ class process {
 						}
 				}
 			}
-
+            if(boarddisplay.rowofbomb<9)
+            {
 			for (int j = boarddisplay.columnofbomb - 1; j < boarddisplay.columnofbomb + 2; j++) {
 				for (int i = boarddisplay.rowofbomb - 1; i < boarddisplay.rowofbomb + 2; i++) {
 					if (j >= 0 && j < 9 && i >= 0 && i < 10) {
-						if ((i - 3) >= 0) {
+						if ((i - 3) > 0) {
 							if (boarddisplay.board[i - 3][j] != "_") {
 								boarddisplay.board[i][j] = boarddisplay.board[i - 3][j];
 								boarddisplay.board[i - 3][j] = "_";
 							}
 						}
 					}
+
 				}
 			}
+            }
+            else
+            {
+            	int sign=10;
+    			for (int j = boarddisplay.columnofbomb - 1; j < boarddisplay.columnofbomb + 2; j++) {
+    				for (int i = boarddisplay.rowofbomb+1; i > boarddisplay.rowofbomb-6; i--) {
+    					if (j >= 0 && j < 9 && i >= 0 && i < 10) {
+    						if ((i - 2) > 0) {
+    							if (boarddisplay.board[i - 2][j] != "_") {
+    								boarddisplay.board[i][j] = boarddisplay.board[i - 2][j];
+    								if(sign>i)
+    								sign=i;
+    							}
+    						}
+    					}
+
+    				}
+    			}
+    			for(int j = boarddisplay.columnofbomb - 1; j < boarddisplay.columnofbomb + 2; j++){
+    				for(int i=sign-1;i>0;i--)
+    					boarddisplay.board[i][j]="_";
+    			}
+            }
 		}
 	}
 }

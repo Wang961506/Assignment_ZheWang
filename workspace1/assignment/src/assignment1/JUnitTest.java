@@ -12,7 +12,7 @@ public class JUnitTest {
 		assertEquals(expected,pro2.turn.name);	
 	}
 	
-	@Test
+	@Test  
 	public void testgetLocation(){
 		player player1=new player();
 		int expectedcolumn=1;
@@ -39,7 +39,7 @@ public class JUnitTest {
 	@Test
 	public void testchangePlayer(){
 		player expected=new player("1","X");
-		player player2=new player("2","O"x);
+		player player2=new player("2","O");
 		process input=new process();
 		input.turn=player2;
 		input.changePlayer();
