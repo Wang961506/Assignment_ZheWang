@@ -53,6 +53,29 @@ class player {
 	int column;
 	char blitz;
 	char timeBomb;
+	
+
+	public player() {
+		super();
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+	   if(this == obj)
+		   return true;
+	   if(obj instanceof player)
+	   {
+		   player play=(player)obj;
+		   if(this.name.equals(play.name) && this.shape.equals(play.shape))
+		   return true;
+		   else
+			   return false;
+	   }
+	   else 
+		   return false;
+	}
+
 
 	public player(String name, String shape) {
 		this.name = name;
@@ -278,6 +301,7 @@ class process {
 				}
 			}
 		}
+		
 	}
 
 	public void TimeBomb(boardDisplay boarddisplay) {// rowofbomb=players.column-1,columnofbomb=9-count[(players.column-1)]+1;
